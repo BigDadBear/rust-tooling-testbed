@@ -250,6 +250,25 @@ mod tests {
     }
 
     #[test]
+    fn test_most_common_priority_medium_and_critical() {
+        let medium_tasks = vec![
+            Task::new("A", Priority::Medium),
+            Task::new("B", Priority::Medium),
+            Task::new("C", Priority::Low),
+        ];
+        let medium_stats = compute_stats(&medium_tasks);
+        assert_eq!(medium_stats.priorities.most_common(), "medium");
+
+        let critical_tasks = vec![
+            Task::new("A", Priority::Critical),
+            Task::new("B", Priority::Critical),
+            Task::new("C", Priority::High),
+        ];
+        let critical_stats = compute_stats(&critical_tasks);
+        assert_eq!(critical_stats.priorities.most_common(), "critical");
+    }
+
+    #[test]
     fn test_empty_stats() {
         let tasks: Vec<Task> = Vec::new();
         let stats = compute_stats(&tasks);
@@ -319,6 +338,20 @@ mod tests {
         let freq = tag_frequency(&tasks);
         assert_eq!(freq[0].0, "bug");
         assert_eq!(freq[0].1, 3);
+        assert_eq!(freq[1].0, "feature");
+        assert_eq!(freq[1].1, 1);
+    }
+
+    #[test]
+    fn test_tag_frequency_sorts_with_swap() {
+        let mut tasks = make_test_tasks();
+        tasks[0].add_tag("feature");
+        tasks[1].add_tag("bug");
+        tasks[2].add_tag("bug");
+
+        let freq = tag_frequency(&tasks);
+        assert_eq!(freq[0].0, "bug");
+        assert_eq!(freq[0].1, 2);
         assert_eq!(freq[1].0, "feature");
         assert_eq!(freq[1].1, 1);
     }
