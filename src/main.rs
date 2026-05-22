@@ -1,6 +1,7 @@
 mod task;
 mod store;
 mod filters;
+mod stats;
 
 use store::TaskStore;
 use task::{Task, Priority};
