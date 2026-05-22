@@ -102,6 +102,16 @@ mod tests {
     }
 
     #[test]
+    fn test_tag_distribution_counts_duplicate_tags_on_single_task() {
+        let mut task = Task::new("Single", Priority::Medium);
+        task.add_tag("bug");
+        task.add_tag("bug");
+
+        let dist = tag_distribution(&[task]);
+        assert_eq!(dist, vec![("bug".to_string(), 2)]);
+    }
+
+    #[test]
     fn test_completion_rate_none_done() {
         let tasks = sample_tasks();
         assert_eq!(completion_rate(&tasks), 0.0);
