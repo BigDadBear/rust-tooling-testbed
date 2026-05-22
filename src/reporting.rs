@@ -80,7 +80,7 @@ mod tests {
     }
 
     #[test]
-    fn test_tag_distribution_counts_all_occurrences() {
+    fn test_tag_distribution_counts_across_multiple_tasks() {
         let mut first = Task::new("First", Priority::High);
         first.add_tag("bug");
         first.add_tag("backend");
@@ -102,7 +102,7 @@ mod tests {
     }
 
     #[test]
-    fn test_tag_distribution_counts_duplicate_tags_on_single_task() {
+    fn test_tag_distribution_duplicate_tags_single_task() {
         let mut task = Task::new("Single", Priority::Medium);
         task.add_tag("bug");
         task.add_tag("bug");
