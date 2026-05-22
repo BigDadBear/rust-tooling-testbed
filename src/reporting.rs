@@ -1,4 +1,5 @@
 use crate::task::{Task, Priority};
+use std::collections::BTreeMap;
 
 /// Generate a simple text report of tasks
 pub fn summary_report(tasks: &[Task]) -> String {
@@ -26,22 +27,13 @@ pub fn top_urgent(tasks: &[Task], n: usize) -> Vec<&Task> {
 
 /// Count tasks per tag, returned as (tag, count) pairs
 pub fn tag_distribution(tasks: &[Task]) -> Vec<(String, usize)> {
-    let mut tags: Vec<(String, usize)> = Vec::new();
+    let mut tags: BTreeMap<String, usize> = BTreeMap::new();
     for task in tasks {
         for tag in &task.tags {
-            let mut found = false;
-            for entry in &mut tags {
-                if entry.0 == *tag {
-                    entry.1 += 1;
-                    found = true;
-                }
-            }
-            if !found {
-                tags.push((tag.clone(), 1));
-            }
+            *tags.entry(tag.clone()).or_insert(0) += 1;
         }
     }
-    tags
+    tags.into_iter().collect()
 }
 
 /// Completion rate as a value between 0.0 and 1.0
@@ -85,6 +77,28 @@ mod tests {
         let tasks = sample_tasks();
         let dist = tag_distribution(&tasks);
         assert_eq!(dist.len(), 0);
+    }
+
+    #[test]
+    fn test_tag_distribution_counts_all_occurrences() {
+        let mut first = Task::new("First", Priority::High);
+        first.add_tag("bug");
+        first.add_tag("backend");
+        first.add_tag("bug");
+
+        let mut second = Task::new("Second", Priority::Low);
+        second.add_tag("bug");
+        second.add_tag("frontend");
+
+        let dist = tag_distribution(&[first, second]);
+        assert_eq!(
+            dist,
+            vec![
+                ("backend".to_string(), 1),
+                ("bug".to_string(), 3),
+                ("frontend".to_string(), 1),
+            ]
+        );
     }
 
     #[test]
