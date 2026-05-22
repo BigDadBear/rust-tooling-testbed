@@ -147,12 +147,7 @@ pub fn average_urgency(tasks: &[Task]) -> f64 {
     for task in tasks {
         sum += task.urgency_score();
     }
-    // BUG: divides by completed count instead of total count
-    let completed = tasks.iter().filter(|t| t.done).count();
-    if completed == 0 {
-        return sum / tasks.len() as f64;
-    }
-    sum / completed as f64
+    sum / tasks.len() as f64
 }
 
 #[cfg(test)]
