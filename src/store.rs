@@ -66,6 +66,13 @@ impl TaskStore {
         self.tasks.len() - self.pending_count()
     }
 
+    pub fn completion_rate(&self) -> f64 {
+        if self.tasks.len() == 0 {
+            return 0.0;
+        }
+        self.done_count() as f64 / self.tasks.len() as f64
+    }
+
     pub fn get_by_priority(&self, priority: Priority) -> Vec<&Task> {
         let mut result = Vec::new();
         for task in &self.tasks {
@@ -117,8 +124,8 @@ impl TaskStore {
         let pending = self.pending_count();
         let critical = self.get_by_priority(Priority::Critical).len();
         format!(
-            "Tasks: {} total, {} done, {} pending, {} critical",
-            total, done, pending, critical
+            "Tasks: {} total, {} done, {} pending, {} critical ({:.0}% complete)",
+            total, done, pending, critical, self.completion_rate() * 100.0
         )
     }
 

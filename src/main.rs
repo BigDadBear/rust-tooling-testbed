@@ -1,6 +1,7 @@
 mod task;
 mod store;
 mod filters;
+mod stats;
 
 use store::TaskStore;
 use task::{Task, Priority};
@@ -30,4 +31,10 @@ fn main() {
     // export to json
     let json = store.export_json();
     println!("\nExported JSON ({} bytes)", json.len());
+
+    let all = store.get_all_tasks();
+    println!("\nCompletion: {:.1}%", stats::completion_percentage(all));
+    if let Some(top) = stats::most_urgent(all) {
+        println!("Most urgent: {}", top.formatted_title());
+    }
 }
