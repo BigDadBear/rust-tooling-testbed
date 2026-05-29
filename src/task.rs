@@ -94,6 +94,11 @@ impl Task {
         return self.title.len();
     }
 
+    // a task is actionable if it isn't done and is at least High priority
+    pub fn is_actionable(&self) -> bool {
+        !self.done && self.priority.numeric_value() >= Priority::High.numeric_value()
+    }
+
     // returns a "score" for sorting - higher is more urgent
     pub fn urgency_score(&self) -> f64 {
         let base = self.priority.numeric_value() as f64;
@@ -162,5 +167,14 @@ mod tests {
     fn test_from_str() {
         assert_eq!(Priority::from_str("low"), Priority::Low);
         assert_eq!(Priority::from_str("HIGH"), Priority::High);
+    }
+
+    #[test]
+    fn test_is_actionable() {
+        let high = Task::new("ship it", Priority::High);
+        assert!(high.is_actionable());
+
+        let low = Task::new("someday", Priority::Low);
+        assert!(!low.is_actionable());
     }
 }

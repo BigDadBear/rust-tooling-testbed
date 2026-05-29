@@ -40,10 +40,15 @@ impl TaskStore {
         None
     }
 
-    pub fn mark_done(&mut self, id: u64) {
-        // just unwrap it, task should exist
-        let task = self.get_task_mut(id).unwrap();
-        task.done = true;
+    pub fn mark_done(&mut self, id: u64) -> bool {
+        // return whether the task was found instead of panicking
+        match self.get_task_mut(id) {
+            Some(task) => {
+                task.done = true;
+                true
+            }
+            None => false,
+        }
     }
 
     pub fn delete_task(&mut self, id: u64) -> bool {
@@ -134,6 +139,17 @@ impl TaskStore {
         }
         completed
     }
+
+    // counts tasks that are still actionable (not done + high enough priority)
+    pub fn actionable_count(&self) -> usize {
+        let mut count = 0;
+        for task in &self.tasks {
+            if task.is_actionable() {
+                count += 1;
+            }
+        }
+        count
+    }
 }
 
 #[cfg(test)]
@@ -182,5 +198,11 @@ mod tests {
         store.add_task(Task::new("Write tests", Priority::Medium));
         let results = store.search("bug");
         assert_eq!(results.len(), 1);
+    }
+
+    #[test]
+    fn test_mark_done_missing() {
+        let mut store = TaskStore::new();
+        assert!(!store.mark_done(9999));
     }
 }
