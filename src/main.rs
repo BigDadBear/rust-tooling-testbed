@@ -1,6 +1,7 @@
 mod task;
 mod store;
 mod filters;
+mod export;
 
 use store::TaskStore;
 use task::{Task, Priority};
@@ -30,4 +31,7 @@ fn main() {
     // export to json
     let json = store.export_json();
     println!("\nExported JSON ({} bytes)", json.len());
+
+    println!("\nCSV export:\n{}", export::to_csv(store.get_all_tasks()));
+    println!("{}", export::summary_banner(store.get_all_tasks()));
 }
