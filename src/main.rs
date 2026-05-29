@@ -20,6 +20,10 @@ fn main() {
             task.title, task.priority);
     }
 
+
+
+    
+
     // mark first task done
     let id = store.get_all_tasks()[0].id;
     store.mark_done(id);
