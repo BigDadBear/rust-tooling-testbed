@@ -122,6 +122,20 @@ impl TaskStore {
         )
     }
 
+    // hands out the done tasks so they can be archived elsewhere
+    pub fn drain_done(&mut self) -> Vec<Task> {
+        let mut done = Vec::new();
+        let mut i = 0;
+        while i < self.tasks.len() {
+            if self.tasks[i].done {
+                done.push(self.tasks.remove(i));
+            } else {
+                i += 1;
+            }
+        }
+        done
+    }
+
     pub fn bulk_complete(&mut self, ids: &[u64]) -> usize {
         let mut completed = 0;
         for id in ids {

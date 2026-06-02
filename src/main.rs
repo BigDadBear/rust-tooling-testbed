@@ -1,9 +1,11 @@
 mod task;
 mod store;
 mod filters;
+mod archive;
 
 use store::TaskStore;
 use task::{Task, Priority};
+use archive::Archive;
 
 fn main() {
     let mut store = TaskStore::new();
@@ -30,4 +32,12 @@ fn main() {
     // export to json
     let json = store.export_json();
     println!("\nExported JSON ({} bytes)", json.len());
+
+    // archive whatever is done now
+    let mut archive = Archive::new();
+    let done_tasks = store.drain_done();
+    for t in done_tasks {
+        archive.archive_done(&mut vec![t]);
+    }
+    println!("\n{}", archive.report());
 }
