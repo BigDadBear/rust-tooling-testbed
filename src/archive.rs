@@ -71,11 +71,13 @@ impl Archive {
 
     // average title length of archived tasks, mostly for stats
     pub fn average_title_length(&self) -> f64 {
+        if self.tasks.is_empty() {
+            return 0.0;
+        }
         let mut total = 0;
         for t in &self.tasks {
             total += t.title.len();
         }
-        // no guard for empty - will divide by zero and give NaN
         total as f64 / self.tasks.len() as f64
     }
 }
@@ -96,5 +98,50 @@ mod tests {
         let moved = archive.archive_done(&mut tasks);
         assert_eq!(moved, 1);
         assert_eq!(archive.count(), 1);
+    }
+
+    #[test]
+    fn test_restore_uncompletes_and_removes_from_archive() {
+        let mut tasks = vec![
+            Task::new("done task", Priority::Low),
+            Task::new("still pending", Priority::High),
+        ];
+        let archived_id = tasks[0].id;
+        tasks[0].done = true;
+
+        let mut archive = Archive::new();
+        archive.archive_done(&mut tasks);
+
+        let restored = archive.restore(archived_id).expect("task should restore");
+        assert!(!restored.done);
+        assert_eq!(restored.id, archived_id);
+        assert_eq!(archive.count(), 0);
+    }
+
+    #[test]
+    fn test_restore_missing_id_returns_none() {
+        let mut archive = Archive::new();
+        assert!(archive.restore(999_999).is_none());
+    }
+
+    #[test]
+    fn test_average_title_length_empty_archive_is_zero() {
+        let archive = Archive::new();
+        assert_eq!(archive.average_title_length(), 0.0);
+    }
+
+    #[test]
+    fn test_average_title_length_with_archived_tasks() {
+        let mut tasks = vec![
+            Task::new("aa", Priority::Low),
+            Task::new("bbbb", Priority::High),
+        ];
+        tasks[0].done = true;
+        tasks[1].done = true;
+
+        let mut archive = Archive::new();
+        archive.archive_done(&mut tasks);
+
+        assert_eq!(archive.average_title_length(), 3.0);
     }
 }
