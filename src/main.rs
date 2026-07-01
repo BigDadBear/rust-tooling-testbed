@@ -1,9 +1,11 @@
 mod task;
 mod store;
 mod filters;
+mod reports;
 
 use store::TaskStore;
 use task::{Task, Priority};
+use reports::{daily_report, estimate_minutes_left};
 
 fn main() {
     let mut store = TaskStore::new();
@@ -30,4 +32,8 @@ fn main() {
     // export to json
     let json = store.export_json();
     println!("\nExported JSON ({} bytes)", json.len());
+
+    println!("\nDaily report:");
+    println!("{}", daily_report(store.get_all_tasks()));
+    println!("Probably about {} minutes left", estimate_minutes_left(store.get_all_tasks()));
 }
