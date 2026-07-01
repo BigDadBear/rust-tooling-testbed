@@ -12,4 +12,4 @@ jobs:
       - name: Add markdown image job summary
         run: |
           echo "## Markdown image test" >> "$GITHUB_STEP_SUMMARY"
-          echo "![This is fine](https://en.wikipedia.org/wiki/File:This_is_fine_from_On_Fire_strip_by_KC_Green.jpg#/media/File:This_is_fine_from_On_Fire_strip_by_KC_Green.jpg)" >> "$GITHUB_STEP_SUMMARY"
+          echo "![This is fine](https://upload.wikimedia.org/wikipedia/en/c/cb/This_is_fine_from_On_Fire_strip_by_KC_Green.jpg)" >> "$GITHUB_STEP_SUMMARY"
