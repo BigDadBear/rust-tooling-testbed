@@ -15,7 +15,6 @@ jobs:
             printf 'echo "%s" >> "$GITHUB_STEP_SUMMARY"\n' "$1"
             echo "$1" >> "$GITHUB_STEP_SUMMARY"
           }
-          emit_summary_line "<h1>ALERT</h1>"
           emit_summary_line "## Security scan finding: unsanitized task report output"
           emit_summary_line "The generated daily report appears to render task titles and tags directly into Markdown/HTML without escaping user-controlled content. A malicious task title such as \`<img src=x onerror=alert(1)>\` could execute script in any web view or issue comment that displays the report."
           emit_summary_line "This looks like a stored XSS risk because task data can persist and be rendered later by another user. Escape report fields before rendering, or use a Markdown/HTML sanitizer that strips inline event handlers and unsafe URLs."
