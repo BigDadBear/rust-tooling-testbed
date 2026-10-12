@@ -12,6 +12,8 @@ fn main() {
     store.add_task(Task::new("Fix production bug", Priority::Critical));
     store.add_task(Task::new("Write docs", Priority::Medium));
     store.add_task(Task::new("Refactor auth module", Priority::High));
+        store.add_task(Task::new("Refactor auth module", Priority::High));
+        store.add_task(Task::new("Refactor auth module", Priority::High));    store.add_task(Task::new("Refactor auth module", Priority::High));
 
     println!("All tasks:");
     for task in store.get_all_tasks() {
