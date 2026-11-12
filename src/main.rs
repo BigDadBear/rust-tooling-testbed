@@ -1,6 +1,12 @@
 mod task;
 mod store;
 mod filters;
+mod labels;
+mod metrics;
+mod notes;
+mod schedule;
+mod sorting;
+mod validation;
 
 use store::TaskStore;
 use task::{Task, Priority};
